@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Check if script is run with root privileges
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root to access all disk information" >&2
+    exit 1
+fi
+
+echo "========================="
+echo "Disk Size Checker Report"
+echo "========================="
+
+echo -e "\n1. Disk Usage (df):"
+echo "------------------------"
+df -h
+
+echo -e "\n2. Block Devices (lsblk):"
+echo "------------------------"
+lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+
+echo -e "\n3. Partition Information (fdisk):"
+echo "------------------------"
+fdisk -l | grep -E "Disk /dev/|Disk model:"
+
+echo -e "\n4. Detailed Disk Information:"
+echo "------------------------"
+for disk in $(lsblk -ndo NAME); do
+    if [[ $disk == sd* || $disk == nvme* ]]; then
+        echo "Disk: /dev/$disk"
+        hdparm -I /dev/$disk 2>/dev/null | grep -E "Model|Serial|Firmware|capacity"
+        echo "------------------------"
+    fi
+done
+
+echo -e "\nEnd of Disk Size Checker Report"

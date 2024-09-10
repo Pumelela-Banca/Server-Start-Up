@@ -40,6 +40,14 @@ else
         else
             echo "Failed to set password for user $name"
         fi
+        if [ "$sudo_privilege" = "sudo" ]; then
+            usermod -aG sudo "$name"
+            if [ $? -eq 0 ]; then
+                echo "Sudo privileges granted to $name"
+            else
+                echo "Failed to grant sudo privileges to $name"
+            fi
+        fi
     else
         echo "Failed to add user $name"
     fi
