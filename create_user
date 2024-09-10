@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Check if script is run with root privileges
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root" >&2
+    exit 1
+fi
+
+# Check if at least one argument (username) is provided
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <username> [password]" >&2
+    exit 1
+fi
+
+# Assign arguments to variables
+name=$1
+password=$2
+
+# If password is not provided as an argument, use a default
+if [ -z "$password" ]; then
+    password="changeme"
+    echo "No password provided. Using default password: 'changeme'"
+    echo "Please change the password after first login."
+fi
+
+# Create the new user
+if id "$name" &>/dev/null; then
+    echo "User $name already exists"
+else
+    useradd -m "$name"
+    if [ $? -eq 0 ]; then
+        echo "User $name has been added to system!"
+        # Set the password
+        echo "$name:$password" | chpasswd
+        if [ $? -eq 0 ]; then
+            echo "Password has been set for user $name"
+            if [ "$password" == "changeme" ]; then
+                passwd -e "$name"  # Force password change on first login
+            fi
+        else
+            echo "Failed to set password for user $name"
+        fi
+    else
+        echo "Failed to add user $name"
+    fi
+fi
