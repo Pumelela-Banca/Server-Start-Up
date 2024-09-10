@@ -15,6 +15,7 @@ fi
 # Assign arguments to variables
 name=$1
 password=$2
+sudo_privilege=$3
 
 # If password is not provided as an argument, use a default
 if [ -z "$password" ]; then
@@ -40,6 +41,7 @@ else
         else
             echo "Failed to set password for user $name"
         fi
+        # Grant sudo privileges if the user is created with sudo_privilege
         if [ "$sudo_privilege" = "sudo" ]; then
             usermod -aG sudo "$name"
             if [ $? -eq 0 ]; then
