@@ -3,7 +3,7 @@
 
 ## Description
 
-This Bash script automates the process of creating a new user on a Linux system. It allows you to specify a username and optionally a password. If no password is provided, it sets a default password and forces the user to change it on first login.
+This Bash script automates the process of creating a new user on a Linux system. It allows you to specify a username and optionally a password and privillages. If no password is provided, it sets a default password and forces the user to change it on first login.
 
 ## Features
 
@@ -12,6 +12,7 @@ This Bash script automates the process of creating a new user on a Linux system.
 - Uses a default password if none is provided
 - Forces password change on first login when using the default password
 - Checks if the user already exists before attempting to create
+- A
 
 ## Requirements
 
@@ -33,6 +34,10 @@ This Bash script automates the process of creating a new user on a Linux system.
    - To create a user with the default password:
      ```
      sudo ./create_user.sh <username>
+     ```
+   - To create a user with sudo privilages
+     ```
+     sudo ./create_user.sh <username> <password> <sudo>
      ```
 
    Example:
